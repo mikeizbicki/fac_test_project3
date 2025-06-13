@@ -3,35 +3,36 @@
 # 1. ensures deterministic results
 # 2. does not result in API charges
 
-"$PROJECT/outline.json":
-  cmd: cp $PROJECT/basic.json $PROJECT/outline.json && sleep 0.5
+"outline.json":
+  cmd: cp basic.json outline.json
   dependencies: |
-    $PROJECT/basic.json
-    $PROJECT/deps/a
-    $PROJECT/deps/b
+    basic.json
+    deps/a
+    deps/b
 
-"$PROJECT/sub$LEVEL1/outline.json":
+"sub$LEVEL1/outline.json":
   cmd: |
-    cp $PROJECT/basic.json $PROJECT/sub$LEVEL1/outline.json && sleep 0.5
+    cp basic.json sub$LEVEL1/outline.json
   dependencies: |
-    $PROJECT/outline.json
+    outline.json
   variables:
     LEVEL1: |
-      jq -r 'range(0; .sections | length)' $PROJECT/outline.json | tr '\n' '\0'
+      jq -r 'range(0; .sections | length)' outline.json | tr '\n' '\0'
 
-"$PROJECT/sub$LEVEL1/sub$LEVEL2/outline.json":
+"sub$LEVEL1/sub$LEVEL2/outline.json":
   cmd: |
-    cp $PROJECT/basic.json $PROJECT/sub$LEVEL1/sub$LEVEL2/outline.json && sleep 0.5
+    cp basic.json sub$LEVEL1/sub$LEVEL2/outline.json
   dependencies: |
-    $PROJECT/outline.json
+    outline.json
+    sub$LEVEL1/outline.json
   variables:
     LEVEL1: |
-      jq -r 'range(0; .sections | length)' $PROJECT/outline.json | tr '\n' '\0'
+      jq -r 'range(0; .sections | length)' outline.json | tr '\n' '\0'
     LEVEL2: |
-      jq -r "range(0; [.sections | length, $(($LEVEL1 + 1))] | min )" $PROJECT/sub$LEVEL1/outline.json | tr '\n' '\0'
+      jq -r "range(0; [.sections | length, $(($LEVEL1 + 1))] | min )" sub$LEVEL1/outline.json | tr '\n' '\0'
 
-"$PROJECT/final.txt":
+"final.txt":
   cmd: |
-    touch "$PROJECT/final.txt" && sleep 0.5
+    echo hello > "final.txt"
   dependencies: |
-    $PROJECT/sub$LEVEL1/sub$LEVEL2/outline.json
+    sub$LEVEL1/sub$LEVEL2/outline.json
