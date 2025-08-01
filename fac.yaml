@@ -1,4 +1,5 @@
-# this test project shows how to use
+# variables that are used in dependencies but not in the target will trigger a build of the dependency
+# all of the files that match the target will be included in the dependencies
 
 "outline.json":
   cmd: cp basic.json outline.json
@@ -21,12 +22,13 @@
   cmd: |
     cp basic.json sub$LEVEL1/outline.json
   dependencies:
-    #- asd
-    #- dasda
-    #- resources/$RESOURCE/about.json
+    - outline.json
+    - resources/$RESOURCE/about.json
+    # NOTE:
+    # the above will expand to
+    # resources/a/about.json
+    # resources/b/about.json
   variables:
-    RESOURCE:
-      ls resources
     LEVEL1:
       jq -r 'range(0; .sections | length)' outline.json
 
