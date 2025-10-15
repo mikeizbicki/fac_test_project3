@@ -19,33 +19,42 @@
       ls resources
 
 "sub$LEVEL1/outline.json":
-  cmd: |
-    cp basic.json sub$LEVEL1/outline.json
+  cmd: cp basic.json sub$LEVEL1/outline.json
   dependencies:
     - outline.json
-    - resources/$RESOURCE/about.json
-    # NOTE:
-    # the above will expand to
-    # resources/a/about.json
-    # resources/b/about.json
+    - target: resources/$RESOURCE/about.json
+      allow_create: true
   variables:
     LEVEL1:
       jq -r 'range(0; .sections | length)' outline.json
+      #postreqs:
+      #- sub$LEVEL1/outline.json--resources_RESOURCE_about.json
+
+      #"sub$LEVEL1/outline.json--resources_RESOURCE_about.json":
+      #cmd: |
+      #cp basic.json sub$LEVEL1/outline.json--resources_RESOURCE_about.json
+      #dependencies:
+      #- sub$LEVEL1/outline.json
+      #- outline.json
+      #- resources/$RESOURCE/about.json
+      #variables:
+      #LEVEL1:
+      #jq -r 'range(0; .sections | length)' outline.json
 
 "sub$LEVEL1/sub$LEVEL2/outline.json":
-  cmd: |
+  cmd:
     cp basic.json sub$LEVEL1/sub$LEVEL2/outline.json
   dependencies:
     - outline.json
     - sub$LEVEL1/outline.json
   variables:
-    LEVEL1: |
+    LEVEL1:
       jq -r 'range(0; .sections | length)' outline.json
-    LEVEL2: |
+    LEVEL2:
       jq -r "range(0; [.sections | length, $(($LEVEL1 + 1))] | min )" sub$LEVEL1/outline.json
 
 "final.txt":
-  cmd: |
+  cmd:
     echo hello > "final.txt"
   dependencies:
     - sub$LEVEL1/sub$LEVEL2/outline.json
