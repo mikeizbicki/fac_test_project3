@@ -1,6 +1,6 @@
 #!/bin/sh
 
-#set -ex
+set -ex
 alias fac='python3 -m fac'
 
 # The idea of this test script is that we will run a series of build commands
