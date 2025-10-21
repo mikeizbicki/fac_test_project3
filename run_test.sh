@@ -1,7 +1,7 @@
 #!/bin/sh
 
 set -ex
-alias fac='python3 -m fac'
+alias fac='python3 -m fac --auto_commit=False'
 
 # The idea of this test script is that we will run a series of build commands
 # and check to see if the files that have been created match the files that should have been created.
