@@ -37,7 +37,7 @@
   variables:
     LEVEL1:
       jq -r 'range(0; .sections | length)' outline.json
-    NAME:
+    NAME: |
       echo "d"
       echo "e"
       echo "f"
