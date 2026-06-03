@@ -3,9 +3,12 @@
 "outline.json":
   cmd: cp basic.json outline.json
   dependencies:
-    - basic.json
-    - deps/a
-    - deps/b
+    - target: basic.json
+      in_fac.yaml: False
+    - target: deps/a
+      in_fac.yaml: False
+    - target: deps/b
+      in_fac.yaml: False
 
 # This target has nothing to build when run initially
 # because the $RESOURCE variable will resolve to nothing.
@@ -15,7 +18,8 @@
 "resources/$RESOURCE/about.json":
   cmd: cp basic.json resources/$RESOURCE/about.json
   dependencies:
-    - basic.json
+    - target: basic.json
+      in_fac.yaml: False
     - outline.json
   variables:
     RESOURCE:
